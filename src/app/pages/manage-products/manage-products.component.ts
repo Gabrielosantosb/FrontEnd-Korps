@@ -95,6 +95,10 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     })
   }
 
+  onPageIndexChange(pageIndex: number): void {
+    this.pagination.page = pageIndex;
+    this.loadProducts();
+  }
 
   clearFilters(){
     this.filterProductForm.reset()

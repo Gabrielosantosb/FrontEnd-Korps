@@ -119,26 +119,27 @@
   </nz-col>
 </nz-row>
 
-  <!--  TABELA DE PRODUTOS-->
-  <nz-spin [nzSpinning]="isTableLoading">
-    <nz-divider
-      [nzText]=" 'Encontrados: ' + totalItems ">
-      nzOrientation="left"
-      *ngIf="!!totalItems">
-    </nz-divider>
+<!--  TABELA DE PRODUTOS-->
+<nz-spin [nzSpinning]="isTableLoading">
+  <nz-divider
+    [nzText]=" 'Encontrados: ' + totalItems ">
+    nzOrientation="left"
+    *ngIf="!!totalItems">
+  </nz-divider>
 
-    <div nz-row class="table-responsive">
-      <nz-table
-        [nzData]="productsData"
-        nzSize="default"
-        [nzFrontPagination]="false"
-        [nzShowPagination]="showPagination"
-        [nzTotal]="totalItems"
-        [nzPageIndex]="pagination.page"
-        [nzPageSize]="pagination.pageSize"
-      >
-        <!--          (nzPageIndexChange)="onPageIndexChange($event)"-->
-        <thead>
+  <div nz-row class="table-responsive">
+    <nz-table
+      [nzData]="productsData"
+      nzSize="default"
+      [nzFrontPagination]="false"
+      [nzShowPagination]="showPagination"
+      [nzTotal]="totalItems"
+      [nzPageIndex]="pagination.page"
+      [nzPageSize]="pagination.pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+    >
+
+      <thead>
         <tr>
           <th>Ações</th>
           <th>Produto</th>
@@ -146,44 +147,44 @@
           <th>Criado em</th>
           <th>Atualizado em</th>
         </tr>
-        </thead>
+      </thead>
 
-        <tbody>
-        <tr *ngFor="let product of productsData">
-          <td>
-            <button
-              nz-button
-              nzShape="circle"
-              title="Excluir"
-              nz-popconfirm
-              nzPopconfirmTitle="Tem certeza que deseja INATIVAR este produto?"
-              (nzOnConfirm)="toggleProductStatus(product.productId, false)"
-              nzPopconfirmPlacement="top"
-              style="margin-right: 5px"
-            >
-              <span nz-icon nzType="delete"></span>
-            </button>
+      <tbody>
+      <tr *ngFor="let product of productsData">
+        <td>
+          <button
+            nz-button
+            nzShape="circle"
+            title="Excluir"
+            nz-popconfirm
+            nzPopconfirmTitle="Tem certeza que deseja INATIVAR este produto?"
+            (nzOnConfirm)="toggleProductStatus(product.productId, false)"
+            nzPopconfirmPlacement="top"
+            style="margin-right: 5px"
+          >
+            <span nz-icon nzType="delete"></span>
+          </button>
 
-            <button
-              nz-button
-              nzShape="circle"
-              title="Editar"
-              nz-popconfirm
-              nzPopconfirmPlacement="top"
-            >
-              <span nz-icon nzType="check"></span>
-            </button>
-          </td>
-          <td>{{ product.productName }}</td>
-          <td>{{ product.productPrice | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
-          <td>{{ product.dateCreated | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
-          <td>{{ product?.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' || '--' }}</td>
+          <button
+            nz-button
+            nzShape="circle"
+            title="Editar"
+            nz-popconfirm
+            nzPopconfirmPlacement="top"
+          >
+            <span nz-icon nzType="check"></span>
+          </button>
+        </td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.productPrice | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+        <td>{{ product.dateCreated | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+        <td>{{ product?.updatedAt | date: 'dd/MM/yyyy HH:mm:ss' || '--' }}</td>
 
-        </tr>
-        </tbody>
+      </tr>
+      </tbody>
 
 
-      </nz-table>
-    </div>
+    </nz-table>
+  </div>
 
-  </nz-spin>
+</nz-spin>
