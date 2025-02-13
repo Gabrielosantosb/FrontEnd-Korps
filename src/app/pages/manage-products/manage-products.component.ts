@@ -104,6 +104,13 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     this.filterProductForm.reset()
     this.loadProducts()
   }
+  openRegisterProduct(){
+    this.showCreateProductModal = true
+  }
+
+  closeRegisterProduct(){
+    this.showCreateProductModal = false
+  }
 
   private closeCreateProductModal(){
     this.showCreateProductModal = false

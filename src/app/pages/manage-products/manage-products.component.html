@@ -103,6 +103,7 @@
       nzShape="round"
       nzSize="large"
       title="Adicionar Produto"
+      (click)="openRegisterProduct()"
     >
       <span nz-icon nzType="shopping"></span>
     </button>
@@ -140,13 +141,13 @@
     >
 
       <thead>
-        <tr>
-          <th>Ações</th>
-          <th>Produto</th>
-          <th>Preço</th>
-          <th>Criado em</th>
-          <th>Atualizado em</th>
-        </tr>
+      <tr>
+        <th>Ações</th>
+        <th>Produto</th>
+        <th>Preço</th>
+        <th>Criado em</th>
+        <th>Atualizado em</th>
+      </tr>
       </thead>
 
       <tbody>
@@ -188,3 +189,63 @@
   </div>
 
 </nz-spin>
+
+<!-----------------MODAL CADASTRO DE PRODUTO------------------>
+<nz-modal [(nzVisible)]="showCreateProductModal"
+          nzTitle="Cadastrar Produto"
+          [nzOkDisabled]="createProductForm.invalid"
+          (nzOnOk)="createProduct()"
+          (nzOnCancel)="closeRegisterProduct()"
+          nzWidth="80%">
+
+  <form
+    nz-form
+    nzLayout="vertical"
+    [formGroup]="createProductForm"
+    *nzModalContent>
+    <nz-row nzGutter="12">
+      <nz-col nzSm="8" nzXs="24">
+        <nz-form-label>Nome do produto</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+            <input
+              formControlName="productName"
+              placeholder="Nome do produto"
+              nz-input
+              type="text"
+            >
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+
+      <nz-col nzSm="8" nzXs="24">
+        <nz-form-label>Preço mínimo</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+            <input
+              formControlName="price"
+              placeholder="Preço"
+              nz-input
+              type="number"
+            >
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+
+      <nz-col nzSm="8" nzXs="24">
+        <nz-form-label>Categoria</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+            <input
+              formControlName="category"
+              placeholder="Categoria"
+              nz-input
+              type="number"
+            >
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </nz-row>
+  </form>
+
+</nz-modal>
