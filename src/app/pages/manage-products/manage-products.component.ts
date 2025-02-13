@@ -91,9 +91,15 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       })
     ).subscribe(() =>{
       this.messageService.infoMessage('Produto desativado!')
+      this.loadProducts()
     })
   }
 
+
+  clearFilters(){
+    this.filterProductForm.reset()
+    this.loadProducts()
+  }
 
   private closeCreateProductModal(){
     this.showCreateProductModal = false
