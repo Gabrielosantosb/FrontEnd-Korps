@@ -128,7 +128,6 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       minPrice: [null],
       maxPrice: [null],
       isActive: [null],
-
     })
   }
 
