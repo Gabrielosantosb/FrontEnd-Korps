@@ -14,7 +14,7 @@ import {ProductModel} from "../../shared/interface/product.model";
 export class ManageProductsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   createProductForm !: FormGroup
-  filterProduct!: FormGroup;
+  filterProductForm!: FormGroup;
 
   productsData!: ProductModel[]
   pagination = {page: 1, pageSize: 10};
@@ -37,7 +37,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
 
   loadProducts() {
     this.isTableLoading = true;
-    const filterFormValue = this.filterProduct.value;
+    const filterFormValue = this.filterProductForm.value;
 
     // Limpar valores nulos para nao mandar para o back
     const cleanedFilters = this.cleanObject({ ...filterFormValue, ...this.pagination });
@@ -77,11 +77,21 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
 
 
   updateProduct(){
-
+    this.isLoading = true
   }
 
-  toggleProductStatus(){
-
+  toggleProductStatus(productId: number, active: boolean){
+    this.productService.toggleProductStatus(productId, active).pipe(
+      takeUntil(this.destroy$),
+      catchError((err: HttpErrorResponse) =>{
+        const errorMessage = err.error?.message || 'Erro ao alterar status';
+        console.error(err);
+        this.messageService.errorMessage(errorMessage);
+        return throwError(() => err);
+      })
+    ).subscribe(() =>{
+      this.messageService.infoMessage('Produto desativado!')
+    })
   }
 
 
@@ -111,7 +121,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       category: ['', Validators.required]
     })
 
-    this.filterProduct = this.formBuilder.group({
+    this.filterProductForm = this.formBuilder.group({
       productName: [''],
       dateCreatedStart: [null],
       dateCreatedEnd: [null],

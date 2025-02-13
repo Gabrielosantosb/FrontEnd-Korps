@@ -1,3 +1,74 @@
 <nz-page-header class="mobile-header" nzTitle="Gerenciar Produtos">
 </nz-page-header>
 
+<form nz-form nzLayout="vertical" [formGroup]="filterProductForm" (ngSubmit)="loadProducts()">
+  <nz-divider
+    nzText="Filtros"
+    nzOrientation="left"
+  ></nz-divider>
+  <nz-row nzGutter="12">
+    <nz-col nzSm="8" nzXs="24">
+      <nz-form-label>Nome do produto</nz-form-label>
+      <nz-form-item>
+        <nz-form-control>
+          <input
+            formControlName="productName"
+            placeholder="Nome do produto"
+            nz-input
+            type="text"
+          >
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col nzSm="8" nzXs="24">
+      <nz-form-label>Preço mínimo</nz-form-label>
+      <nz-form-item>
+        <nz-form-control>
+          <input
+            formControlName="minPrice"
+            placeholder="Preço mínimo"
+            nz-input
+            type="number"
+          >
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col nzSm="8" nzXs="24">
+      <nz-form-label>Preço máximo</nz-form-label>
+      <nz-form-item>
+        <nz-form-control>
+          <input
+            formControlName="maxPrice"
+            placeholder="Preço máximo"
+            nz-input
+            type="number"
+          >
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+
+  <nz-row nzGutter="12">
+    <nz-col nzSm="12" nzXs="24">
+      <nz-form-label>Data de criação</nz-form-label>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-date-picker
+            formControlName="dateCreatedStart"
+            nzFormat="dd/MM/yyyy"
+            nzPlaceHolder="Início"
+          ></nz-date-picker>
+
+          <nz-date-picker
+            formControlName="dateCreatedEnd"
+            nzFormat="dd/MM/yyyy"
+            nzPlaceHolder="Fim"
+            style="margin-left: 8px;"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+</form>
