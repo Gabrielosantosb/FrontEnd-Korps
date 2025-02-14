@@ -1,10 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {catchError, finalize, Subject, takeUntil, throwError} from "rxjs";
 import {ProductService} from "../../shared/service/product.service";
+import {CategoryService} from "../../shared/service/category.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MessageService} from "../../shared/utils/messageService";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ProductModel} from "../../shared/interface/product.model";
+import {CategoryModel} from "../../shared/interface/category.model";
 
 @Component({
   selector: 'app-manage-products',
@@ -17,14 +19,17 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   filterProductForm!: FormGroup;
 
   productsData!: ProductModel[]
+  categoriesData!: CategoryModel[]
   pagination = {page: 1, pageSize: 10};
   totalItems: number = 0;
   isLoading: boolean = false;
   isTableLoading: boolean = false;
   showPagination: boolean = true;
   showCreateProductModal: boolean = false;
+  showCreateCategoryModal: boolean = false;
 
   constructor(private productService: ProductService,
+              private categoryService: CategoryService,
               private formBuilder: FormBuilder,
               private messageService: MessageService) {
   }
@@ -40,7 +45,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     const filterFormValue = this.filterProductForm.value;
 
     // Limpar valores nulos para nao mandar para o back
-    const cleanedFilters = this.cleanObject({ ...filterFormValue, ...this.pagination });
+    const cleanedFilters = this.cleanObject({...filterFormValue, ...this.pagination});
 
     this.productService.getProducts(cleanedFilters, this.pagination).pipe(
       takeUntil(this.destroy$),
@@ -57,39 +62,64 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     });
   }
 
-  createProduct(){
+  loadCategories(){
+    this.categoryService.getCategories().pipe(takeUntil(this.destroy$)).subscribe((res) =>{
+      console.log('aqui a res ao pegar categorias', res)
+      this.categoriesData = res
+    })
+  }
+
+  createProduct() {
     this.isLoading = true
     this.productService.createProduct(this.createProductForm.value).pipe(
       takeUntil(this.destroy$),
       finalize(() => this.isLoading = false),
       catchError((err: HttpErrorResponse) => {
-        const errorMessage = err.error?.message || 'Erro ao criar Produto!';
-        console.error(err);
-        this.messageService.errorMessage(errorMessage);
-        return throwError(() => err);
-      }
-    )).subscribe((res)=> {
+          const errorMessage = err.error?.message || 'Erro ao criar Produto!';
+          console.error(err);
+          this.messageService.errorMessage(errorMessage);
+          return throwError(() => err);
+        }
+      )).subscribe((res) => {
       console.log('aqui a res do create', res)
       this.messageService.successMessage('Produto criado com sucesso!')
       this.closeCreateProductModal()
     })
   }
 
+  createCategory() {
+    this.isLoading = true
+    this.categoryService.createCategory(this.createProductForm.value).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading = false),
+      catchError((err: HttpErrorResponse) => {
+          const errorMessage = err.error?.message || 'Erro ao criar Categoria!';
+          console.error(err);
+          this.messageService.errorMessage(errorMessage);
+          return throwError(() => err);
+        })
+      ).subscribe((res) => {
+      console.log('aqui a res do create', res)
+      this.messageService.successMessage('Categoria criada com sucesso!')
+      this.closeCreateProductModal()
+    })
+  }
 
-  updateProduct(){
+
+  updateProduct() {
     this.isLoading = true
   }
 
-  toggleProductStatus(productId: number, active: boolean){
+  toggleProductStatus(productId: number, active: boolean) {
     this.productService.toggleProductStatus(productId, active).pipe(
       takeUntil(this.destroy$),
-      catchError((err: HttpErrorResponse) =>{
+      catchError((err: HttpErrorResponse) => {
         const errorMessage = err.error?.message || 'Erro ao alterar status';
         console.error(err);
         this.messageService.errorMessage(errorMessage);
         return throwError(() => err);
       })
-    ).subscribe(() =>{
+    ).subscribe(() => {
       this.messageService.infoMessage('Produto desativado!')
       this.loadProducts()
     })
@@ -100,20 +130,31 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     this.loadProducts();
   }
 
-  clearFilters(){
+  clearFilters() {
     this.filterProductForm.reset()
     this.loadProducts()
   }
-  openRegisterProduct(){
+
+  openRegisterProduct() {
+    this.loadCategories()
     this.showCreateProductModal = true
+
+  }
+  openRegisterCategory() {
+    this.showCreateCategoryModal = true
   }
 
-  closeRegisterProduct(){
+  closeRegisterProduct() {
     this.showCreateProductModal = false
   }
 
-  private closeCreateProductModal(){
+  private closeCreateProductModal() {
     this.showCreateProductModal = false
+    this.loadProducts()
+  }
+
+  closeCreateCategoryModal(){
+    this.showCreateCategoryModal = false
     this.loadProducts()
   }
 
@@ -134,8 +175,8 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   private loadInstances() {
     this.createProductForm = this.formBuilder.group({
       productName: ['', Validators.required],
-      productPrice: ['', Validators.required],
-      category: ['', Validators.required]
+      productPrice: [0, Validators.required],
+      categoryId: ['', Validators.required]
     })
 
     this.filterProductForm = this.formBuilder.group({

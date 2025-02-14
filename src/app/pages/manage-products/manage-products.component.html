@@ -196,8 +196,8 @@
           [nzOkDisabled]="createProductForm.invalid"
           (nzOnOk)="createProduct()"
           (nzOnCancel)="closeRegisterProduct()"
+          [nzOkLoading]="isLoading"
           nzWidth="80%">
-
   <form
     nz-form
     nzLayout="vertical"
@@ -223,7 +223,7 @@
         <nz-form-item>
           <nz-form-control>
             <input
-              formControlName="price"
+              formControlName="productPrice"
               placeholder="Preço"
               nz-input
               type="number"
@@ -236,15 +236,17 @@
         <nz-form-label>Categoria</nz-form-label>
         <nz-form-item>
           <nz-form-control>
-            <input
-              formControlName="category"
-              placeholder="Categoria"
-              nz-input
-              type="number"
+            <nz-select
+              formControlName="categoryId"
+              nzPlaceHolder="Selecione a categoria"
             >
+              <nz-option *ngFor="let category of categoriesData" [nzValue]="category.categoryId" [nzLabel]="category.categoryName">
+              </nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
+
     </nz-row>
   </form>
 

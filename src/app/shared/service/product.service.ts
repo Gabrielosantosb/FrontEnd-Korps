@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {ProductFilterModel} from "../model/Product/product-filter.model";
 import {PaginatedProducts, ProductModel} from "../interface/product.model";
 import {ProductRequestModel} from "../model/Product/product-request.model";
+import {environment} from "../../../env/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,11 @@ import {ProductRequestModel} from "../model/Product/product-request.model";
 export class ProductService {
 
   // TODO Colocar em outro lucar as env
-  readonly ROUTE = 'https://localhost:7043/api/Product';
+  private readonly ROUTE = `${environment.apiUrl}/Product`;
   constructor(private http: HttpClient) { }
 
 
   getProducts(leadFilter?: ProductFilterModel, pagination?: PaginationModel): Observable<PaginatedProducts> {
-    console.log('aqui no service')
     const params = this.serializeParams({ ...leadFilter, ...pagination });
 
     return this.http.get<PaginatedProducts>(`${this.ROUTE}/get-products`, { params });
