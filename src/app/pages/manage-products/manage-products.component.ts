@@ -16,6 +16,7 @@ import {CategoryModel} from "../../shared/interface/category.model";
 export class ManageProductsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   createProductForm !: FormGroup
+  createCategoryForm !: FormGroup
   filterProductForm!: FormGroup;
 
   productsData!: ProductModel[]
@@ -106,7 +107,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
 
   createCategory() {
     this.isLoading = true
-    this.categoryService.createCategory(this.createProductForm.value).pipe(
+    this.categoryService.createCategory(this.createCategoryForm.value).pipe(
       takeUntil(this.destroy$),
       finalize(() => this.isLoading = false),
       catchError((err: HttpErrorResponse) => {
@@ -115,10 +116,9 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
           this.messageService.errorMessage(errorMessage);
           return throwError(() => err);
         })
-      ).subscribe((res) => {
-      console.log('aqui a res do create', res)
+      ).subscribe(() => {
       this.messageService.successMessage('Categoria criada com sucesso!')
-      this.closeCreateProductModal()
+      this.closeCreateCategoryModal()
     })
   }
 
@@ -215,6 +215,10 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       productName: ['', Validators.required],
       productPrice: [0, Validators.required],
       categoryId: ['', Validators.required]
+    })
+
+    this.createCategoryForm = this.formBuilder.group({
+      categoryName: ['' , Validators.required]
     })
 
     this.filterProductForm = this.formBuilder.group({

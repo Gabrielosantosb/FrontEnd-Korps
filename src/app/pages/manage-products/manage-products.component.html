@@ -114,6 +114,7 @@
       nzShape="round"
       nzSize="large"
       title="Adicionar Categoria"
+      (click)="openRegisterCategory()"
     >
       <span nz-icon nzType="appstore"></span>
     </button>
@@ -244,6 +245,39 @@
               <nz-option *ngFor="let category of categoriesData" [nzValue]="category.categoryId" [nzLabel]="category.categoryName">
               </nz-option>
             </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+
+    </nz-row>
+  </form>
+</nz-modal>
+
+
+<!-----------------MODAL CADASTRO DE CATEGORIA------------------>
+<nz-modal [(nzVisible)]="showCreateCategoryModal"
+          [nzTitle]="'Criar categoria'"
+          [nzOkDisabled]="createCategoryForm.invalid"
+          (nzOnOk)="createCategory()"
+          (nzOnCancel)="closeCreateCategoryModal()"
+          [nzOkLoading]="isLoading"
+          nzWidth="80%">
+  <form
+    nz-form
+    nzLayout="vertical"
+    [formGroup]="createCategoryForm"
+    *nzModalContent>
+    <nz-row nzGutter="12">
+      <nz-col nzSm="8" nzXs="24">
+        <nz-form-label>Nome da categoria</nz-form-label>
+        <nz-form-item>
+          <nz-form-control>
+            <input
+              formControlName="categoryName"
+              placeholder="Nome da categoria"
+              nz-input
+              type="text"
+            >
           </nz-form-control>
         </nz-form-item>
       </nz-col>
