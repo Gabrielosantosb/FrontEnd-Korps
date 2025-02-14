@@ -172,8 +172,9 @@
             title="Editar"
             nz-popconfirm
             nzPopconfirmPlacement="top"
+            (click)="openEditProduct(product)"
           >
-            <span nz-icon nzType="check"></span>
+            <span nz-icon nzType="edit"></span>
           </button>
         </td>
         <td>{{ product.productName }}</td>
@@ -192,9 +193,9 @@
 
 <!-----------------MODAL CADASTRO DE PRODUTO------------------>
 <nz-modal [(nzVisible)]="showCreateProductModal"
-          nzTitle="Cadastrar Produto"
+          [nzTitle]="isEditMode ? 'Editar Produto' : 'Cadastrar Produto'"
           [nzOkDisabled]="createProductForm.invalid"
-          (nzOnOk)="createProduct()"
+          (nzOnOk)="isEditMode ? updateProduct() : createProduct()"
           (nzOnCancel)="closeRegisterProduct()"
           [nzOkLoading]="isLoading"
           nzWidth="80%">

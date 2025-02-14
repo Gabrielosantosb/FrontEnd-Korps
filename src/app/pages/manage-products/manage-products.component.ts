@@ -27,6 +27,8 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   showPagination: boolean = true;
   showCreateProductModal: boolean = false;
   showCreateCategoryModal: boolean = false;
+  selectedProductId!: number
+  isEditMode: boolean = false
 
   constructor(private productService: ProductService,
               private categoryService: CategoryService,
@@ -37,6 +39,7 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadInstances()
     this.loadProducts()
+    this.loadCategories()
   }
 
 
@@ -68,6 +71,20 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
       this.categoriesData = res
     })
   }
+
+  openEditProduct(product: ProductModel): void {
+    this.isEditMode = true;
+    this.selectedProductId = product.productId;
+
+    this.createProductForm.patchValue({
+      productName: product.productName,
+      productPrice: product.productPrice,
+      categoryId: product.categoryId
+    });
+
+    this.showCreateProductModal = true;
+  }
+
 
   createProduct() {
     this.isLoading = true
@@ -106,9 +123,26 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   }
 
 
-  updateProduct() {
-    this.isLoading = true
+  updateProduct(): void {
+    if (this.createProductForm.valid) {
+      this.isLoading = true;
+      const updatedProduct = this.createProductForm.value;
+      this.productService.updateProduct(this.selectedProductId, updatedProduct).pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading = false),
+        catchError((err: HttpErrorResponse) => {
+          const errorMessage = err.error?.message || 'Erro ao atualizar Produto!';
+          console.error(err);
+          this.messageService.errorMessage(errorMessage);
+          return throwError(() => err);
+        })
+      ).subscribe(() => {
+        this.messageService.successMessage('Produto atualizado com sucesso!')
+        this.closeCreateProductModal()
+      })
+    }
   }
+
 
   toggleProductStatus(productId: number, active: boolean) {
     this.productService.toggleProductStatus(productId, active).pipe(
@@ -144,8 +178,12 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
     this.showCreateCategoryModal = true
   }
 
-  closeRegisterProduct() {
-    this.showCreateProductModal = false
+  closeRegisterProduct(): void {
+    this.createProductForm.reset();
+    this.loadProducts()
+    this.loadCategories()
+    this.showCreateProductModal = false;
+    this.isEditMode = false;
   }
 
   private closeCreateProductModal() {

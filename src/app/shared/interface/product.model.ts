@@ -7,6 +7,7 @@ export interface ProductModel {
   dateCreated: Date;
   updatedAt: Date;
   isActive: boolean
+  categoryId: number
   category: CategoryModel;
 }
 
